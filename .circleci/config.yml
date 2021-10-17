@@ -1,0 +1,44 @@
+version: 2.1
+orbs:
+  # use latest 1.x.y version of the orb
+  # best practice is to use an exact version
+  cypress: cypress-io/cypress@1.16.1
+  node: circleci/node@1.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm ci
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # we need to install CircleCI CLI tool
+      # to run the "manual" tests
+      - circleci-cli/install
+      - run: npm test
+      - run: npm run manual:tests
+      - run: npm run docs
+
+workflows:
+   build:
+     jobs:
+       - cypress/run:
+           record: false
+           spec: "cypress/integration/PlayVideo.js"
