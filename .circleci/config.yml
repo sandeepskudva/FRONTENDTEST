@@ -41,4 +41,4 @@ workflows:
      jobs:
        - cypress/run:
            record: false
-           spec: "cypress/integration/PlayVideo.js"
+           spec: "cypress/integration/*.js"
