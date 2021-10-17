@@ -4,7 +4,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
         return false;
       });
 
-     
+
+      
 describe("YoutubeTests",function(){
 
 before(function(){
@@ -12,9 +13,10 @@ before(function(){
 })
 
 beforeEach(function(){
+        cy.viewport(800, 600)
         cy.visit("https://www.youtube.com/")
         cy.title().should('eq', 'YouTube')
-        cy.task('log', 'Sucessfully Landed On Youtube page')
+        cy.task('log', 'Sucessfully Landed On Youtube page with resolution 800 * 600')
         cy.get("#search-input > #search").type("movingimage")        
         cy.get("#search-icon-legacy").click()
         cy.get('#channel-title > #container > #text-container > #text').first().contains('movingimage')  
@@ -37,6 +39,21 @@ beforeEach(function(){
             });    
             
         
+}) 
+
+it('Reduce video volume to 10%', function(){
+        
+        cy.get(".video-stream")
+        .should('have.prop', 'paused', false)
+        .and('have.prop', 'ended', false)
+        .then(($video) => {
+                $video[0].volume=0.1;
+                })
+        cy.task('log', 'Volume is reduced to 10%')         
+        cy.get("#primary").scrollIntoView()
+        cy.task('log', 'waiting for the video to end') 
+        cy.get('.video-stream', { timeout: 80000 }).should('have.prop', 'ended', true); 
+         
 }) 
 
 it('pause, play, mute and umute the video', function(){
@@ -67,23 +84,11 @@ it('pause, play, mute and umute the video', function(){
         cy.task('log', 'video set on unmute')  
         cy.get("#primary").scrollIntoView()
         cy.task('log', 'waiting for the video to end') 
-        cy.get('.video-stream', { timeout: 80000 }).should('have.prop', 'ended', true);     
+        cy.get('.video-stream', { timeout: 40000 }).should('have.prop', 'ended', true);     
                     
 })  
 
-it('assert duration of the video', function(){
-        
-        cy.get(".video-stream")
-        .should('have.prop', 'paused', false)
-        .and('have.prop', 'ended', false)
-        .then(($video) => {
-                $video[0].pause()
-              })  
-        cy.get("#primary").scrollIntoView()
-        cy.wait(5000)
-        cy.get(".video-stream").should('have.prop', 'duration', 37.021)
-         
-})      
+     
 
 
 })
