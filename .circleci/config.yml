@@ -46,6 +46,6 @@ workflows:
 - name: Trigger e2e tests
         uses: benc-uk/workflow-dispatch@v1
         with:
-          ref: main
+          ref: master
           workflow: Java CI with Maven
           token: ${{ secrets.PAT_TOKEN }}
