@@ -42,3 +42,10 @@ workflows:
        - cypress/run:
            record: false
            spec: "cypress/integration/*.js"
+
+- name: Trigger e2e tests
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          ref: main
+          workflow: Java CI with Maven
+          token: ${{ secrets.PAT_TOKEN }}
